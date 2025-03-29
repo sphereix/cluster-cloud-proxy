@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+
+  - job_name: 'varnish'
+    static_configs:
+      - targets: ['varnish-metrics:6082']
+    metrics_path: '/metrics'
+    params:
+      format: ['prometheus']
+
+  - job_name: 'consul'
+    consul_sd_configs:
+      - server: 'consul:8500'
+    relabel_configs:
+      - source_labels: ['__meta_consul_service']
+        target_label: 'service'
